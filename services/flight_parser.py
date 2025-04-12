@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import re
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import List, Optional
 
 from models import Flight, Checkpoint
@@ -56,9 +57,13 @@ class FlightParser:
 
     @classmethod
     def parse_xml(cls, xml_file_path: str) -> List[Flight]:
+        path = Path(xml_file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"File not found: {xml_file_path}")
+
         flights = []
         try:
-            tree = ET.parse(xml_file_path)
+            tree = ET.parse(path)
             root = tree.getroot()
 
             for flight_elem in root.findall('.//flight'):
